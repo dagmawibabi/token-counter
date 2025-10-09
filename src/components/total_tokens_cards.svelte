@@ -8,11 +8,11 @@
 >
 	<div class="text-sm text-neutral-500">{label}</div>
 	<div class="flex items-center justify-center">
+		<div class="pl-1 text-lg text-neutral-500 md:text-2xl">
+			{leading}
+		</div>
 		<div class="font-mono text-lg text-neutral-600 md:text-3xl">
 			<FormattedNumber number={result_length} />
-		</div>
-		<div class="pl-1 text-lg italic md:text-xl">
-			{leading}
 		</div>
 	</div>
 </div>
