@@ -5,13 +5,13 @@
 	import { resultState } from '../state/result_state.svelte';
 </script>
 
-<div class="flex items-center justify-between px-10 py-4">
-	<div class="flex">
+<div class="flex items-center justify-between px-2 py-4 md:px-10">
+	<div class="flex items-center justify-between">
 		<div class="flex items-center justify-center gap-x-2">
 			<img src={logo} alt="OpenAI Logo" class="h-6 w-6" />
-			<div class="text-xl font-semibold">Token Counter</div>
+			<div class="font-semibold md:text-xl">Token Counter</div>
 		</div>
-		<div class="flex items-end justify-end text-sm font-medium text-neutral-500">
+		<div class="hidden items-end justify-end text-sm font-medium text-neutral-500 md:flex">
 			&nbsp;— by&nbsp;<a
 				href="https://dagmawi.dev"
 				class="italic hover:text-blue-500"

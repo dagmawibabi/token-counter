@@ -2,7 +2,7 @@
 	import HighlightedWords from './highlighted_words.svelte';
 </script>
 
-<div class="text-md px-10 pb-5 text-left text-neutral-700 italic">
+<div class="md:text-md px-4 pb-5 text-left text-sm text-neutral-700 italic md:px-10">
 	<div>
 		You can export your ChatGPT data in <HighlightedWords
 			word="Settings → Data Controls → Export → Confirm Export"

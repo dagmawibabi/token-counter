@@ -12,15 +12,24 @@
 		// try {
 		// 	const storedResults = localStorage.getItem('chatResults');
 		// 	const storedTotals = localStorage.getItem('chatTotals');
-		// 	if (storedResults) results = JSON.parse(storedResults);
-		// 	if (storedTotals) overallTotals = JSON.parse(storedTotals);
+		// 	if (storedResults) resultState.results = JSON.parse(storedResults);
+		// 	if (storedTotals) resultState.overallTotals = JSON.parse(storedTotals);
 		// } catch (e) {
 		// 	console.error(e);
 		// }
 	});
 </script>
 
-<div class="mx-auto h-screen w-2/3 overflow-clip selection:bg-neutral-500 selection:text-white">
+<svelte:head>
+	<title>Token Counter</title>
+	<meta property="description" content="Open-source ChatGPT Conversation Token Counter" />
+	<meta property="og:title" content="Token Counter" />
+	<meta property="og:description" content="Open-source ChatGPT Conversation Token Counter" />
+</svelte:head>
+
+<div
+	class="h-screen w-[95%] overflow-clip pl-5 selection:bg-neutral-500 selection:text-white md:mx-auto md:w-2/3 md:pl-0"
+>
 	<!-- Nav -->
 	<Nav />
 

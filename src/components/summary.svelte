@@ -3,8 +3,8 @@
 	import TotalTokensCards from './total_tokens_cards.svelte';
 </script>
 
-<div class="px-5">
-	<div class="flex justify-center gap-x-5 pt-2 pb-8">
+<div class="px-2 md:px-5">
+	<div class="grid grid-cols-2 justify-center gap-x-5 gap-y-5 pt-2 pb-8 md:flex">
 		<TotalTokensCards label="Number of Chats" result_length={resultState.results.length} />
 		<TotalTokensCards label="Input Tokens" result_length={resultState.overallTotals.input_tokens} />
 		<TotalTokensCards
