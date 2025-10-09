@@ -31,37 +31,39 @@
 	<meta property="og:description" content="Open-source ChatGPT Conversation Token Counter" />
 </svelte:head>
 
-<div
-	class="w-[95%] overflow-clip pl-5 selection:bg-neutral-500 selection:text-white md:mx-auto md:w-2/3 md:pl-0"
->
-	<!-- Nav -->
-	<Nav />
+<div class="h-screen overflow-scroll">
+	<div
+		class="w-[95%] overflow-clip pl-5 selection:bg-neutral-500 selection:text-white md:mx-auto md:w-2/3 md:pl-0"
+	>
+		<!-- Nav -->
+		<Nav />
 
-	<!-- Paragraph -->
-	{#if resultState.isDataLoaded == false}
-		<HeaderParagraph />
-	{/if}
+		<!-- Paragraph -->
+		{#if resultState.isDataLoaded == false}
+			<HeaderParagraph />
+		{/if}
 
-	<Separator />
+		<Separator />
 
-	<!-- Results -->
-	{#if resultState.results.length == 0}
-		<!-- CTA -->
-		<div class="px-10 py-5">
-			<Cta />
-		</div>
-	{:else}
-		<!-- Models -->
-		<Models />
+		<!-- Results -->
+		{#if resultState.results.length == 0}
+			<!-- CTA -->
+			<div class="px-10 py-5">
+				<Cta />
+			</div>
+		{:else}
+			<!-- Models -->
+			<Models />
 
-		<!-- Total -->
-		<Summary />
-	{/if}
-</div>
+			<!-- Total -->
+			<Summary />
+		{/if}
+	</div>
 
-<div class="mx-auto w-[85%]">
-	{#if resultState.results.length !== 0}
-		<!-- Table -->
-		<TableData />
-	{/if}
+	<div class="mx-auto w-[85%]">
+		{#if resultState.results.length !== 0}
+			<!-- Table -->
+			<TableData />
+		{/if}
+	</div>
 </div>

@@ -13,7 +13,7 @@
 </script>
 
 <div
-	class="no-scrollbar mx-auto h-full w-full overflow-scroll rounded-md border border-neutral-400 bg-neutral-200 hover:border-neutral-400"
+	class="no-scrollbar mx-auto mb-36 h-full w-full overflow-scroll rounded-md border border-neutral-400 bg-neutral-200 hover:border-neutral-400"
 >
 	<Table.Root class="drop-shadow-2xl">
 		<Table.Header class="sticky top-0 bg-neutral-200">
@@ -139,10 +139,19 @@
 					<FormattedNumber number={resultState.overallTotals.input_tokens} />
 				</Table.Cell>
 				<Table.Cell class="border-r border-l text-center">
+					$<FormattedNumber number={resultState.overallTotals.input_price} />
+				</Table.Cell>
+				<Table.Cell class="border-r border-l text-center">
 					<FormattedNumber number={resultState.overallTotals.output_tokens} />
+				</Table.Cell>
+				<Table.Cell class="border-r border-l text-center">
+					$<FormattedNumber number={resultState.overallTotals.output_price} />
 				</Table.Cell>
 				<Table.Cell class="text-center">
 					<FormattedNumber number={resultState.overallTotals.total_tokens} />
+				</Table.Cell>
+				<Table.Cell class="border-r border-l text-center">
+					$<FormattedNumber number={resultState.overallTotals.total_price} />
 				</Table.Cell>
 				<Table.Cell class="font-medium"></Table.Cell>
 			</Table.Row>

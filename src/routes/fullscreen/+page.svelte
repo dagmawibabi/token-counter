@@ -23,7 +23,7 @@
 	<Summary />
 </div>
 
-<div class="mx-auto w-[80%]">
+<div class="mx-auto w-[85%] pb-36">
 	<!-- Table -->
 	<TableData />
 </div>
