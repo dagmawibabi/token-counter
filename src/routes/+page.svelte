@@ -8,7 +8,9 @@
 	import Summary from '../components/summary.svelte';
 
 	onMount(() => {
-		resultState.loadSampleData();
+		if (resultState.results.length == 0) {
+			resultState.loadSampleData();
+		}
 		// try {
 		// 	const storedResults = localStorage.getItem('chatResults');
 		// 	const storedTotals = localStorage.getItem('chatTotals');
