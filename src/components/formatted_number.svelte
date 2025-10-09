@@ -1,6 +1,8 @@
 <script lang="ts">
-	let { number } = $props();
+	let { number = 0 } = $props();
 	const formatter = new Intl.NumberFormat('en-US');
 </script>
 
-{formatter.format(number)}
+<div class="inline-block">
+	{formatter.format(number)}
+</div>

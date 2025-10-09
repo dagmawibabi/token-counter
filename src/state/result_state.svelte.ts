@@ -6,6 +6,7 @@ interface ChatMessage {
 		author?: { role?: string };
 		content?: { parts?: string[] };
 		metadata?: { model_slug?: string };
+		default_model_slug: string;
 	};
 }
 
@@ -26,18 +27,98 @@ interface TokenSummary {
 	create_time: string;
 	update_time: string;
 	model: string;
+	input_price: number;
+	output_price: number;
+	total_price: number;
 }
 
 interface Totals {
 	input_tokens: number;
 	output_tokens: number;
 	total_tokens: number;
+	input_price: number;
+	output_price: number;
+	total_price: number;
 }
 
+const modelPrices: Record<string, { input: number; output: number }> = {
+	auto: {
+		input: 2.5,
+		output: 10
+	},
+	research: {
+		input: 2.5,
+		output: 10
+	},
+	unknown: {
+		input: 2.5,
+		output: 10
+	},
+	'': {
+		input: 2.5,
+		output: 10
+	},
+	'gpt-5': {
+		input: 1.25,
+		output: 10
+	},
+	'gpt-5-mini': {
+		input: 0.25,
+		output: 2
+	},
+	'gpt-5-t-mini': {
+		input: 0.05,
+		output: 0.4
+	},
+	'gpt-5-thinking': {
+		input: 1.25,
+		output: 10
+	},
+	'gpt-4o': {
+		input: 2.5,
+		output: 10
+	},
+	'gpt-4o-mini': {
+		input: 0.15,
+		output: 0.6
+	},
+	'gpt-4-1': {
+		input: 2,
+		output: 8
+	},
+	'gpt-4-1-mini': {
+		input: 0.4,
+		output: 1.6
+	},
+	o1: {
+		input: 15,
+		output: 60
+	},
+	'o3-mini': {
+		input: 1.1,
+		output: 4.4
+	},
+	'o4-mini': {
+		input: 1.1,
+		output: 4.4
+	},
+	'text-davinci-002-render-sha': {
+		input: 2,
+		output: 2
+	}
+};
+
 class ResultState {
-	isSampleDataLoaded = $state(false);
+	isDataLoaded = $state(false);
 	results: TokenSummary[] = $state([]);
-	overallTotals: Totals = $state({ input_tokens: 0, output_tokens: 0, total_tokens: 0 });
+	overallTotals: Totals = $state({
+		input_tokens: 0,
+		output_tokens: 0,
+		total_tokens: 0,
+		input_price: 0,
+		output_price: 0,
+		total_price: 0
+	});
 	models: string[] = $state([]);
 	modelCounts: Record<string, number> = $state({
 		'gpt-5': 515,
@@ -59,7 +140,6 @@ class ResultState {
 	loadSampleData() {
 		this.results = sampleData;
 		this.overallTotals = this.computeTotals(this.results);
-		this.isSampleDataLoaded = true;
 	}
 
 	async handleFileChange(event: Event) {
@@ -92,22 +172,46 @@ class ResultState {
 								inputTokens += count;
 							} else if (role === 'assistant') {
 								outputTokens += count;
-								modelSlug = msg?.metadata?.model_slug ?? 'unknown';
-								this.models.push(msg?.metadata?.model_slug ?? 'unknown');
+								modelSlug = msg?.metadata?.model_slug ?? msg?.default_model_slug ?? 'unknown';
+								this.models.push(modelSlug);
 							}
 						}
 					}
 
-					summaries.push({
-						chat_title: chat.title ?? 'Untitled Chat',
-						input_tokens: inputTokens,
-						output_tokens: outputTokens,
-						total_tokens: inputTokens + outputTokens,
-						conversation_id: chat.conversation_id!,
-						create_time: chat.create_time!,
-						update_time: chat.update_time!,
-						model: modelSlug
-					});
+					try {
+						summaries.push({
+							chat_title: chat.title ?? 'Untitled Chat',
+							input_tokens: inputTokens,
+							output_tokens: outputTokens,
+							total_tokens: inputTokens + outputTokens,
+							conversation_id: chat.conversation_id!,
+							create_time: chat.create_time!,
+							update_time: chat.update_time!,
+							model: modelSlug,
+							input_price: (modelPrices[modelSlug].input * inputTokens) / 1000000,
+							output_price: (modelPrices[modelSlug].output * outputTokens) / 1000000,
+							total_price:
+								(modelPrices[modelSlug].input * inputTokens) / 1000000 +
+								(modelPrices[modelSlug].output * outputTokens) / 1000000
+						});
+					} catch (e) {
+						console.log(e);
+						summaries.push({
+							chat_title: chat.title ?? 'Untitled Chat',
+							input_tokens: inputTokens,
+							output_tokens: outputTokens,
+							total_tokens: inputTokens + outputTokens,
+							conversation_id: chat.conversation_id!,
+							create_time: chat.create_time!,
+							update_time: chat.update_time!,
+							model: modelSlug,
+							input_price: (modelPrices['gpt-4o'].input * inputTokens) / 1000000,
+							output_price: (modelPrices['gpt-4o'].output * outputTokens) / 1000000,
+							total_price:
+								(modelPrices['gpt-4o'].input * inputTokens) / 1000000 +
+								(modelPrices['gpt-4o'].output * outputTokens) / 1000000
+						});
+					}
 				}
 
 				this.results = summaries;
@@ -128,7 +232,7 @@ class ResultState {
 			}
 		};
 		reader.readAsText(file);
-		this.isSampleDataLoaded = false;
+		this.isDataLoaded = true;
 	}
 
 	computeTotals(summaries: TokenSummary[]) {
@@ -137,9 +241,19 @@ class ResultState {
 				acc.input_tokens += curr.input_tokens;
 				acc.output_tokens += curr.output_tokens;
 				acc.total_tokens += curr.total_tokens;
+				acc.input_price += curr.input_price;
+				acc.output_price += curr.output_price;
+				acc.total_price += curr.total_price;
 				return acc;
 			},
-			{ input_tokens: 0, output_tokens: 0, total_tokens: 0 }
+			{
+				input_tokens: 0,
+				output_tokens: 0,
+				total_tokens: 0,
+				input_price: 0,
+				output_price: 0,
+				total_price: 0
+			}
 		);
 
 		return totals;
@@ -151,10 +265,23 @@ class ResultState {
 		output_tokens: 'asc',
 		total_tokens: 'asc',
 		chat_title: 'asc',
-		model: 'asc'
+		model: 'asc',
+		input_price: 'asc',
+		output_price: 'asc',
+		total_price: 'asc'
 	};
 
-	sortResults(field: 'input_tokens' | 'output_tokens' | 'total_tokens' | 'chat_title' | 'model') {
+	sortResults(
+		field:
+			| 'input_tokens'
+			| 'output_tokens'
+			| 'total_tokens'
+			| 'chat_title'
+			| 'model'
+			| 'input_price'
+			| 'output_price'
+			| 'total_price'
+	) {
 		const order = this.sortOrder[field]; // current order
 		this.results = [...this.results].sort((a, b) => {
 			if (field === 'chat_title') {

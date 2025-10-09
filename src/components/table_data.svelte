@@ -24,14 +24,19 @@
 						>Chat Title and ID</Button
 					></Table.Head
 				>
-				<Table.Head class="w-[80px] text-center"
+				<!-- <Table.Head class="w-[80px] text-center"
 					><Button variant="ghost" onclick={() => resultState.sortResults('model')}>Model</Button
 					></Table.Head
-				>
+				> -->
 
 				<Table.Head class="border text-center"
 					><Button variant="ghost" onclick={() => resultState.sortResults('input_tokens')}
 						>Input Tokens</Button
+					></Table.Head
+				>
+				<Table.Head class="border text-center"
+					><Button variant="ghost" onclick={() => resultState.sortResults('input_price')}
+						>Input Price</Button
 					></Table.Head
 				>
 				<Table.Head class="text-center"
@@ -39,9 +44,19 @@
 						>Output Tokens</Button
 					></Table.Head
 				>
+				<Table.Head class="text-center"
+					><Button variant="ghost" onclick={() => resultState.sortResults('output_price')}
+						>Output Price</Button
+					></Table.Head
+				>
 				<Table.Head class="border text-center"
 					><Button variant="ghost" onclick={() => resultState.sortResults('total_tokens')}
 						>Total Tokens</Button
+					></Table.Head
+				>
+				<Table.Head class="border text-center"
+					><Button variant="ghost" onclick={() => resultState.sortResults('total_price')}
+						>Total Price</Button
 					></Table.Head
 				>
 				<Table.Head class="w-[60px] text-center">
@@ -75,23 +90,37 @@
 							{chat.conversation_id}
 						</div>
 					</Table.Cell>
-					<Table.Cell class="w-[80px] overflow-clip border-r  text-center">
+					<!-- <Table.Cell class="w-[80px] overflow-clip border-r  text-center">
 						{chat.model}
-					</Table.Cell>
+					</Table.Cell> -->
 					<Table.Cell class="text-center">
 						<FormattedNumber number={chat.input_tokens} />
 					</Table.Cell>
-					<Table.Cell class="border-r border-l text-center">
+					<Table.Cell class="border-r border-l text-center ">
+						$<FormattedNumber number={chat.input_price} />
+					</Table.Cell>
+					<Table.Cell class="text-center">
 						<FormattedNumber number={chat.output_tokens} />
+					</Table.Cell>
+					<Table.Cell class="border-r border-l text-center">
+						$<FormattedNumber number={chat.output_price} />
 					</Table.Cell>
 					<Table.Cell class="text-center">
 						<FormattedNumber number={chat.total_tokens} />
 					</Table.Cell>
-					<Table.Cell class="w-[60px] cursor-pointer border-l text-center hover:bg-neutral-400">
+					<Table.Cell class="border-r border-l text-center">
+						$<FormattedNumber number={chat.total_price} />
+					</Table.Cell>
+					<Table.Cell class="w-[60px] cursor-pointer text-center hover:bg-neutral-400">
 						<Popover.Root>
 							<Popover.Trigger class="cursor-pointer "><Ellipsis size={16} /></Popover.Trigger>
 							<Popover.Content class="w-fit">
 								<div>
+									<div>
+										<div class="text-xs text-neutral-500">Model:</div>
+										<div class="text-xs">{chat.model}</div>
+									</div>
+									<Separator class="my-2" />
 									<FormattedDate label="Created at" date={chat.create_time} />
 									<Separator class="my-2" />
 									<FormattedDate label="Updated at" date={chat.update_time} />

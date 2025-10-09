@@ -7,7 +7,6 @@
 	import { resultState } from '../state/result_state.svelte';
 	import Summary from '../components/summary.svelte';
 	import Separator from '$lib/components/ui/separator/separator.svelte';
-	import FormattedNumber from '../components/formatted_number.svelte';
 	import Models from '../components/models.svelte';
 
 	onMount(() => {
@@ -39,7 +38,9 @@
 	<Nav />
 
 	<!-- Paragraph -->
-	<HeaderParagraph />
+	{#if resultState.isDataLoaded == false}
+		<HeaderParagraph />
+	{/if}
 
 	<Separator />
 
@@ -58,7 +59,7 @@
 	{/if}
 </div>
 
-<div class="mx-auto w-[80%]">
+<div class="mx-auto w-[85%]">
 	{#if resultState.results.length !== 0}
 		<!-- Table -->
 		<TableData />
