@@ -6,6 +6,9 @@
 	import TableData from '../components/table_data.svelte';
 	import { resultState } from '../state/result_state.svelte';
 	import Summary from '../components/summary.svelte';
+	import Separator from '$lib/components/ui/separator/separator.svelte';
+	import FormattedNumber from '../components/formatted_number.svelte';
+	import Models from '../components/models.svelte';
 
 	onMount(() => {
 		if (resultState.results.length == 0) {
@@ -30,13 +33,15 @@
 </svelte:head>
 
 <div
-	class="h-screen w-[95%] overflow-clip pl-5 selection:bg-neutral-500 selection:text-white md:mx-auto md:w-2/3 md:pl-0"
+	class="w-[95%] overflow-clip pl-5 selection:bg-neutral-500 selection:text-white md:mx-auto md:w-2/3 md:pl-0"
 >
 	<!-- Nav -->
 	<Nav />
 
 	<!-- Paragraph -->
 	<HeaderParagraph />
+
+	<Separator />
 
 	<!-- Results -->
 	{#if resultState.results.length == 0}
@@ -45,9 +50,16 @@
 			<Cta />
 		</div>
 	{:else}
+		<!-- Models -->
+		<Models />
+
 		<!-- Total -->
 		<Summary />
+	{/if}
+</div>
 
+<div class="mx-auto w-[80%]">
+	{#if resultState.results.length !== 0}
 		<!-- Table -->
 		<TableData />
 	{/if}

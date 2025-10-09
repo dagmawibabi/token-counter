@@ -19,11 +19,16 @@
 		<Table.Header class="sticky top-0 bg-neutral-200">
 			<Table.Row>
 				<Table.Head class="border">Number</Table.Head>
-				<Table.Head class="w-[450px]"
+				<Table.Head class="w-[350px] border-r"
 					><Button variant="ghost" onclick={() => resultState.sortResults('chat_title')}
 						>Chat Title and ID</Button
 					></Table.Head
 				>
+				<Table.Head class="w-[80px] text-center"
+					><Button variant="ghost" onclick={() => resultState.sortResults('model')}>Model</Button
+					></Table.Head
+				>
+
 				<Table.Head class="border text-center"
 					><Button variant="ghost" onclick={() => resultState.sortResults('input_tokens')}
 						>Input Tokens</Button
@@ -60,7 +65,7 @@
 				<Table.Row>
 					<Table.Cell class="font-medium">{resultState.results.indexOf(chat) + 1}</Table.Cell>
 					<Table.Cell
-						class="group/title flex w-[450px] cursor-default border-r border-l group-hover/title:hidden"
+						class="group/title flex w-[350px] cursor-default overflow-clip border-r border-l group-hover/title:hidden"
 					>
 						<div class="flex cursor-default group-hover/title:hidden">
 							{chat.chat_title}
@@ -69,6 +74,9 @@
 							<span class="text-xs text-neutral-500">ID:&nbsp;</span>
 							{chat.conversation_id}
 						</div>
+					</Table.Cell>
+					<Table.Cell class="w-[80px] overflow-clip border-r  text-center">
+						{chat.model}
 					</Table.Cell>
 					<Table.Cell class="text-center">
 						<FormattedNumber number={chat.input_tokens} />

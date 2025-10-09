@@ -1,4 +1,5 @@
 <script lang="ts">
+	import Models from '../../components/models.svelte';
 	import Nav from '../../components/nav.svelte';
 	import Summary from '../../components/summary.svelte';
 	import TableData from '../../components/table_data.svelte';
@@ -11,13 +12,18 @@
 	<meta property="og:description" content="Open-source ChatGPT Conversation Token Counter" />
 </svelte:head>
 
-<div class="mx-auto w-[95%] pb-36 selection:bg-neutral-500 selection:text-white md:w-2/3">
+<div class="mx-auto w-[95%] selection:bg-neutral-500 selection:text-white md:w-2/3">
 	<!-- Nav -->
 	<Nav />
 
+	<!-- Models -->
+	<Models />
+
 	<!-- Total -->
 	<Summary />
+</div>
 
+<div class="mx-auto w-[80%]">
 	<!-- Table -->
 	<TableData />
 </div>

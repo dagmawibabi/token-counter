@@ -5,6 +5,7 @@ interface ChatMessage {
 	message?: {
 		author?: { role?: string };
 		content?: { parts?: string[] };
+		metadata?: { model_slug?: string };
 	};
 }
 
@@ -24,6 +25,7 @@ interface TokenSummary {
 	conversation_id: string;
 	create_time: string;
 	update_time: string;
+	model: string;
 }
 
 interface Totals {
@@ -36,6 +38,23 @@ class ResultState {
 	isSampleDataLoaded = $state(false);
 	results: TokenSummary[] = $state([]);
 	overallTotals: Totals = $state({ input_tokens: 0, output_tokens: 0, total_tokens: 0 });
+	models: string[] = $state([]);
+	modelCounts: Record<string, number> = $state({
+		'gpt-5': 515,
+		research: 25,
+		unknown: 304,
+		'gpt-5-t-mini': 35,
+		'gpt-5-mini': 69,
+		'gpt-5-thinking': 5,
+		'gpt-4o': 3962,
+		'o4-mini': 10,
+		'gpt-4-1-mini': 3,
+		o1: 28,
+		'gpt-4o-mini': 130,
+		'o3-mini-high': 3,
+		'o3-mini': 2,
+		'text-davinci-002-render-sha': 981
+	});
 
 	loadSampleData() {
 		this.results = sampleData;
@@ -57,6 +76,7 @@ class ResultState {
 				for (const chat of parsed) {
 					let inputTokens = 0;
 					let outputTokens = 0;
+					let modelSlug = '';
 
 					if (chat.mapping) {
 						for (const item of Object.values(chat.mapping)) {
@@ -68,8 +88,13 @@ class ResultState {
 							const text = parts.join(' ');
 							const count = enc.encode(text).length;
 
-							if (role === 'user') inputTokens += count;
-							else if (role === 'assistant') outputTokens += count;
+							if (role === 'user') {
+								inputTokens += count;
+							} else if (role === 'assistant') {
+								outputTokens += count;
+								modelSlug = msg?.metadata?.model_slug ?? 'unknown';
+								this.models.push(msg?.metadata?.model_slug ?? 'unknown');
+							}
 						}
 					}
 
@@ -80,12 +105,22 @@ class ResultState {
 						total_tokens: inputTokens + outputTokens,
 						conversation_id: chat.conversation_id!,
 						create_time: chat.create_time!,
-						update_time: chat.update_time!
+						update_time: chat.update_time!,
+						model: modelSlug
 					});
 				}
 
 				this.results = summaries;
 				this.overallTotals = this.computeTotals(this.results);
+				// this.models = Array.from(new Set(this.models));
+				// count occurence of each model
+				this.modelCounts = this.models.reduce(
+					(acc, model) => {
+						acc[model] = (acc[model] || 0) + 1;
+						return acc;
+					},
+					{} as Record<string, number>
+				);
 				// localStorage.setItem('chatResults', JSON.stringify(results));
 				// localStorage.setItem('chatTotals', JSON.stringify(overallTotals));
 			} catch (e) {
@@ -115,16 +150,19 @@ class ResultState {
 		input_tokens: 'asc',
 		output_tokens: 'asc',
 		total_tokens: 'asc',
-		chat_title: 'asc'
+		chat_title: 'asc',
+		model: 'asc'
 	};
 
-	sortResults(field: 'input_tokens' | 'output_tokens' | 'total_tokens' | 'chat_title') {
+	sortResults(field: 'input_tokens' | 'output_tokens' | 'total_tokens' | 'chat_title' | 'model') {
 		const order = this.sortOrder[field]; // current order
 		this.results = [...this.results].sort((a, b) => {
 			if (field === 'chat_title') {
 				return order === 'asc'
 					? a.chat_title.localeCompare(b.chat_title)
 					: b.chat_title.localeCompare(a.chat_title);
+			} else if (field === 'model') {
+				return order === 'asc' ? a.model.localeCompare(b.model) : b.model.localeCompare(a.model);
 			} else {
 				return order === 'asc' ? a[field] - b[field] : b[field] - a[field];
 			}
